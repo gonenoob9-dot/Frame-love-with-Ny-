@@ -1,0 +1,128 @@
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:"Noto Sans Khmer","Khmer OS Battambang","Leelawadee UI",system-ui,sans-serif;
+  color:#ffe6ef;
+  background:
+    radial-gradient(ellipse at 50% 35%,#4a2038 0%,#2a1222 55%,#160a12 100%);
+  display:flex;flex-direction:column;
+}
+.top{text-align:center;padding:14px 12px 0;z-index:2}
+.top h1{font-size:clamp(20px,4vw,30px);font-weight:700;letter-spacing:.5px;color:#ffb3cf;text-shadow:0 0 18px rgba(255,105,160,.5)}
+.top p{font-size:clamp(12px,2.4vw,14px);opacity:.7;margin-top:4px}
+
+.stage{
+  flex:1;position:relative;perspective:1400px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;
+}
+.stage.dragging{cursor:grabbing}
+.scene{transform-style:preserve-3d;position:relative;width:0;height:0;will-change:transform}
+.frame{transform-style:preserve-3d;position:absolute;left:0;top:0;width:0;height:0}
+
+/* ទិសទាំងអស់នៃស៊ុម (ត្រូវបានបង្កើតដោយ JS) */
+.face{position:absolute;left:0;top:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.f-front,.f-back{
+  background:var(--frame-url) center/100% 100% no-repeat;
+}
+.f-back{filter:brightness(.62) saturate(.8)}
+.f-photo{background-color:#222;background-position:center;background-repeat:no-repeat}
+.f-board{
+  background:
+    repeating-linear-gradient(90deg,rgba(255,255,255,.03) 0 2px,transparent 2px 5px),
+    linear-gradient(135deg,#5a4630,#3a2b1c);
+}
+.f-glass{
+  pointer-events:none;
+  background:linear-gradient(115deg,rgba(255,255,255,0) 30%,rgba(255,255,255,.16) 46%,rgba(255,255,255,0) 60%);
+  background-size:260% 100%;
+}
+/* ក្រាស់ស៊ុម */
+.f-outer{
+  background:
+    repeating-linear-gradient(90deg,rgba(0,0,0,.07) 0 1px,transparent 1px 3px),
+    linear-gradient(180deg,#ffb0cc,#e0679a 45%,#a8346a);
+  backface-visibility:visible;
+}
+.f-inner{
+  background:
+    repeating-linear-gradient(90deg,rgba(0,0,0,.1) 0 1px,transparent 1px 3px),
+    linear-gradient(180deg,#c9507f,#7d2349);
+  backface-visibility:visible;
+}
+
+.floor-shadow{
+  position:absolute;left:50%;bottom:7%;width:46%;max-width:420px;height:26px;
+  transform:translateX(-50%);
+  background:radial-gradient(ellipse,rgba(0,0,0,.55),transparent 70%);
+  pointer-events:none;
+}
+
+.bar{
+  display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
+  padding:10px 12px calc(12px + env(safe-area-inset-bottom));z-index:2;
+}
+.btn{
+  font:inherit;font-size:14px;color:#ffe6ef;cursor:pointer;
+  padding:9px 14px;border-radius:10px;
+  background:rgba(255,160,200,.1);border:1px solid rgba(255,150,195,.4);
+  transition:background .15s,transform .1s;
+}
+.btn:hover{background:rgba(255,160,200,.22)}
+.btn:active{transform:scale(.96)}
+.btn.primary{background:linear-gradient(180deg,#ff9ec4,#e0508a);color:#3a0a20;font-weight:700;border-color:#ffc4da}
+.btn.on{background:rgba(255,130,180,.35)}
+
+.drop-hint{
+  position:fixed;inset:12px;border:3px dashed #ff9ec4;border-radius:18px;
+  display:none;align-items:center;justify-content:center;
+  font-size:24px;font-weight:700;color:#ffb3cf;background:rgba(30,10,20,.75);z-index:10;
+}
+.drop-hint.show{display:flex}
+
+/* បេះដូងលម្អជ្រុងស៊ុម */
+.f-heart{
+  display:flex;align-items:center;justify-content:center;
+  font-family:system-ui,"Segoe UI Symbol",sans-serif;line-height:1;
+  color:#ff5c93;text-shadow:0 1px 0 #fff4,0 0 8px #ff8fb8,0 2px 3px #6a0f33;
+  pointer-events:none;
+}
+/* បេះដូងអណ្ដែត */
+.hearts{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+.hearts i{
+  position:absolute;bottom:-40px;font-style:normal;color:#ff7fae;opacity:0;
+  animation:rise linear infinite;will-change:transform,opacity;
+}
+@keyframes rise{
+  0%{transform:translateY(0) scale(.6);opacity:0}
+  15%{opacity:.55}
+  100%{transform:translateY(-110vh) translateX(30px) scale(1.2);opacity:0}
+}
+
+.f-hanger{backface-visibility:visible;-webkit-backface-visibility:visible;pointer-events:none}
+
+/* អក្សរ 3D សាច់រឹង */
+.f-tg{backface-visibility:visible;-webkit-backface-visibility:visible;transform-style:preserve-3d;pointer-events:none}
+.f-tk{position:absolute;left:0;top:0;pointer-events:none;backface-visibility:hidden;-webkit-backface-visibility:hidden;background-repeat:no-repeat;background-size:100% 100%}
+.f-tshadow{opacity:.9}
+
+.f-msg{
+  overflow:hidden;pointer-events:none;
+  color:#ffe6ef;text-shadow:0 0 6px rgba(255,120,170,.55);
+  line-height:1.45;text-align:left;word-break:normal;overflow-wrap:anywhere;
+  background:linear-gradient(180deg,rgba(60,20,40,.0),rgba(60,20,40,.0));
+}
+.f-msg .w-sky{color:#7fd8ff;font-weight:700;text-shadow:0 0 6px rgba(80,190,255,.6)}
+.f-msg .w-pink{color:#ff7eb6;font-weight:700;text-shadow:0 0 6px rgba(255,80,160,.65)}
+.f-msg .off,.f-msg .off.w-sky,.f-msg .off.w-pink{color:transparent;text-shadow:none}
+
+.msg-inner{font-size:14px;line-height:1.5;transform-origin:0 0;white-space:normal;word-break:normal;overflow-wrap:anywhere}
+
+/* ទូរស័ព្ទផ្ដេក / អេក្រង់ទាប៖ ឱ្យស៊ុមធំបំផុត */
+@media (max-height:540px){
+  .top{padding-top:6px}
+  .top h1{font-size:18px}
+  .top p{display:none}
+  .bar{padding:6px 10px calc(8px + env(safe-area-inset-bottom));gap:6px}
+  .btn{font-size:12px;padding:6px 10px}
+}
